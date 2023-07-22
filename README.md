@@ -11,6 +11,6 @@ s => s * s is equivalent to stating:
 
 "Every perfect square can be written as a multiplication of two perfect squares."
 
-After their construction, conjectures are tested in bulk by the parameters specified by the user.
+After their construction, conjecture candidates are tested in bulk by the parameters specified by the user.
 
 ![alt text](pic2.png)
