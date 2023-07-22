@@ -6,7 +6,9 @@ These forms are represented as expression trees internally. A conjecture is form
 ![alt text](pic1.png)
 
 Every line in that image is a conjecture, for example:
-s => s * s is equivalent to stating: Every perfect square can be written as a multiplication of two perfect squares.
+s => s * s is equivalent to stating: 
+
+Every perfect square can be written as a multiplication of two perfect squares.
 After their construction, conjectures are tested in bulk by the parameters specified by the user.
 
 ![alt text](pic1.png)
