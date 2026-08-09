@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include "vec.h"
 
 typedef enum { ADD='+', MULT='*', VAR=0, NUM=1 } OP;
@@ -23,6 +24,7 @@ Expr *new_var(VAL val);
 Expr *new_num(VAL val);
 void free_expr(Expr *E);
 void print_expr(Expr *E);
+void fprint_expr(FILE *out, Expr *E);
 Expr *gen_expr(int n);
 int isequal_expr(Expr *A, Expr *B);
 Expr *clone_expr(Expr *E);

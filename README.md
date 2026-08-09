@@ -23,6 +23,9 @@ Useful targets:
 - `make forms` builds and runs the generated forms utility.
 - `make clean` removes build artifacts.
 
+The main program can save surviving conjectures to a file with the `s` menu option.
+On a later run, answer `y` when asked whether to start from a saved survivor file.
+
 ## How does it work?
 The general conjecture statement of a conjurer conjecture is "All naturals of the form A can be written in the form B". 
 These forms are represented as expression trees internally. A conjecture is formed by connecting one form to another.

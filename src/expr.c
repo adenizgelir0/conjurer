@@ -53,6 +53,25 @@ void print_expr(Expr *E)
     printf(")");
 }
 
+void fprint_expr(FILE *out, Expr *E)
+{
+    if(E->op == NUM)
+    {
+        fprintf(out,"%d",E->val);
+        return;
+    }
+    if(E->op == VAR)
+    {
+        fprintf(out,"%c",E->val);
+        return;
+    }
+    fprintf(out,"(");
+    fprint_expr(out,E->left);
+    fprintf(out," %c ", E->op);
+    fprint_expr(out,E->right);
+    fprintf(out,")");
+}
+
 Expr *gen_expr(int n)
 {
     char *vals = "scfp";
