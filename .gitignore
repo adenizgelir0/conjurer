@@ -1,0 +1,8 @@
+build/
+a.out
+conjurer
+forms
+parse_expr
+parse_test
+print_forms
+test_conj

@@ -1,18 +1,8 @@
-#pragma once
+#include "conj.h"
+#include "fib.h"
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include "fib.h"
-#include "vec.h"
-#include "expr.h"
-#include "evec.h"
-
-typedef struct Conj {
-	Expr *A,*B;
-	//Conjecture statement:
-	//Every number of the form A can be written in the form B.
-	struct Conj *next;
-} Conj;
 
 Conj *new_conj(Expr *A, Expr *B)
 {
@@ -261,6 +251,68 @@ int rand_expr_bounds(Expr *E, vec *table[], int lower_bound, int upper_bound)
 
 }
 
+int rand_expr_bounds_get_expr(Expr *E, vec *table[], int lower_bound, int upper_bound, Expr **sample)
+{
+	evec *var_nodes = new_evec();
+	extract_vars(E, var_nodes);
+	if(var_nodes->size == 0)
+	{
+		if(*sample == NULL)
+			*sample = clone_expr(E);
+		free_evec(var_nodes);
+		return eval_1varexpr(0, E);
+	}
+	int rand_ind = rand() % (var_nodes->size);
+	Expr *rand_node = var_nodes->data[rand_ind];
+	free_evec(var_nodes);
+	vec *search_space = table[rand_node->val];
+	rand_node->op = NUM;
+	VAL tmp_val = rand_node->val;
+	int low=0, high=search_space->size-1;
+	int space_ubound = -1;
+	while(low <= high)
+	{
+		int mid = low + (high-low)/2;
+		int test_val = search_space->data[mid];
+		rand_node->val = test_val;
+		int min = min_expr(E, table);
+		if(min == upper_bound)
+		{
+			space_ubound = mid;
+			break;
+		}
+		if(min > upper_bound)
+			high = mid - 1;
+		if(min < upper_bound)
+		{
+			space_ubound = max(space_ubound, mid);
+			low = mid+1;
+		}
+	}
+	if(space_ubound == -1)
+	{
+		rand_node->op = VAR;
+		rand_node->val = tmp_val;
+		return -1;
+	}
+	int res = -1;
+	while(res < lower_bound)
+	{
+		int rand_val = search_space->data[rand()%(space_ubound+1)];
+		rand_node->val = rand_val;
+		res = rand_expr_bounds_get_expr(E, table, lower_bound, upper_bound, sample);
+		if(res < lower_bound && *sample != NULL)
+		{
+			free_expr(*sample);
+			*sample = NULL;
+		}
+	}
+	rand_node->op = VAR;
+	rand_node->val = tmp_val;
+	return res;
+
+}
+
 int expr_variabled(Expr *E)
 {
 	evec *vars = new_evec();
@@ -295,6 +347,38 @@ int test_conj(Conj *C, int cap, vec *table[])
 	return test_expr(n, C->B, table);
 }
 
+int test_conj_get_counterexample(Conj *C, int cap, vec *table[], int *counterexample)
+{
+	//print_expr(C->B);
+	//printf("\n");
+	int lower_bound = min_expr(C->A, table);
+	int upper_bound = cap;
+	int n = rand_expr_bounds(C->A, table,
+		   	lower_bound, upper_bound);
+	if(!test_expr(n, C->B, table))
+	{
+		*counterexample = n;
+		return 0;
+	}
+	return 1;
+}
+
+int test_conj_get_counterexample_expr(Conj *C, int cap, vec *table[], Expr **counterexample_expr)
+{
+	//print_expr(C->B);
+	//printf("\n");
+	int lower_bound = min_expr(C->A, table);
+	int upper_bound = cap;
+	*counterexample_expr = NULL;
+	int n = rand_expr_bounds_get_expr(C->A, table,
+		   	lower_bound, upper_bound, counterexample_expr);
+	if(!test_expr(n, C->B, table))
+		return 0;
+	free_expr(*counterexample_expr);
+	*counterexample_expr = NULL;
+	return 1;
+}
+
 void print_conj(Conj *C)
 {
 	print_expr(C->A);
@@ -307,6 +391,26 @@ int test_conj_many(Conj *C, int cap, int T, vec *table[])
 {
 	while(T--)
 		if(!test_conj(C, cap, table))
+			return 0;
+	print_conj(C);
+	return 1;
+
+}
+
+int test_conj_many_get_counterexample(Conj *C, int cap, int T, vec *table[], int *counterexample)
+{
+	while(T--)
+		if(!test_conj_get_counterexample(C, cap, table, counterexample))
+			return 0;
+	print_conj(C);
+	return 1;
+
+}
+
+int test_conj_many_get_counterexample_expr(Conj *C, int cap, int T, vec *table[], Expr **counterexample_expr)
+{
+	while(T--)
+		if(!test_conj_get_counterexample_expr(C, cap, table, counterexample_expr))
 			return 0;
 	print_conj(C);
 	return 1;
@@ -364,4 +468,3 @@ void init_table(int N, vec *table[])
     table[SQUARE] = gen_squares(N);
     table[CUBE] = gen_cubes(N);
 }
-

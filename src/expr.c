@@ -1,25 +1,7 @@
-#pragma once
+#include "expr.h"
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-
-typedef enum {ADD='+', MULT='*',VAR=0,NUM=1} OP;
-typedef enum {
-    ONE=1, TWO=2, THREE=3,
-    SQUARE='s',
-    CUBE='c',
-    FIB='f',
-    PRIME='p'
-} VAL;
-
-struct Expr{
-    OP op;
-    struct Expr *left;
-    struct Expr *right;
-    VAL val;
-};
-
-typedef struct Expr Expr;
 
 Expr *new_expr(OP op)
 {
@@ -133,33 +115,6 @@ void print_expr_code(Expr *E)
 	print_expr_code(E->left);
 	print_expr_code(E->right);
 }
-Expr *parse_expr_code(char *st, int *i)
-{
-	if(st[*i] == 's' || st[*i] == 'c'
-			|| st[*i] == 'f' || st[*i] == 'p')
-		return new_var(st[(*i)++]);
-	if(st[*i] == '1' || st[*i] == '2' || st[*i] == '3')
-		return new_num(st[(*i)++]-'0');
-	if(st[*i] == '+')
-	{
-		(*i)++;
-		Expr *add = new_expr(ADD);
-		add->left = parse_expr_code(st, i);
-		add->right = parse_expr_code(st, i);
-		return add;
-	}
-	(*i)++;
-	Expr *mult = new_expr(MULT);
-	mult->left = parse_expr_code(st, i);
-	mult->right = parse_expr_code(st, i);
-	return mult;
-}
-
-Expr *parse_expr(char *st)
-{
-	int i=0;
-	return parse_expr_code(st,&i);
-}
 
 int min_expr(Expr *E, vec *table[])
 {
@@ -202,4 +157,5 @@ int expr_redundant(Expr *E)
         return expr_redundant(E->left)
             || expr_redundant(E->right)
 			|| (((E->left)->val + ((E->right)->val)) < 4);
+    return 0;
 }

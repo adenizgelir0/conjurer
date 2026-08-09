@@ -1,12 +1,6 @@
-#pragma once
+#include "vec.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct {
-	int *data;
-	int size;
-	int cap;
-} vec;
 
 vec *new_vec()
 {

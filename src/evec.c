@@ -1,14 +1,7 @@
-#pragma once
+#include "evec.h"
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include "expr.h"
-
-typedef struct {
-	Expr **data;
-	int size;
-	int cap;
-} evec; //expression vector
 
 evec *new_evec()
 {
@@ -118,4 +111,3 @@ void free_many(evec *ev)
 		free_expr(ev->data[i]);
 	free_evec(ev);
 }
-

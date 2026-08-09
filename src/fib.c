@@ -1,14 +1,7 @@
-#pragma once
+#include "fib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include "vec.h"
-
-struct gold_int {
-	int a,b;
-	// aφ + b
-};
-typedef struct gold_int gint;
 
 gint new_gint(int a, int b)
 {
