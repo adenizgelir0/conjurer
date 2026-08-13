@@ -23,39 +23,6 @@ void read_test_params(int *n, int *T)
 		printf("Using n=%d and T=%d\n", *n, *T);
 }
 
-int test_conj_many_quiet(Conj *C, int cap, int T, vec *table[])
-{
-	while(T--)
-		if(!test_conj(C, cap, table))
-			return 0;
-	return 1;
-}
-
-Conj* test_conjs_quiet(Conj *head, int cap, int T, vec *table[])
-{
-	if(head == NULL) return NULL;
-	Conj *prev = new_conj(head->A, head->B);
-	Conj *tmp = prev;
-	prev->next = head;
-	while(head != NULL)
-	{
-		if(!test_conj_many_quiet(head, cap, T, table))
-		{
-			prev->next = head->next;
-			free(head);
-			head = prev->next;
-		} 
-		else 
-		{
-			prev = head;
-			head = head->next;
-		}
-	}
-	Conj *new_head = tmp->next;
-	free(tmp);
-	return new_head;
-}
-
 void strip_newline(char *s)
 {
 	for(int i=0; s[i]; i++)
@@ -68,10 +35,10 @@ void strip_newline(char *s)
 
 Expr *parse_line(char *line)
 {
-	parser *p = new_parser(line);
-	Expr *E = parse_expr(p);
-	skip_spaces(p);
-	if(peek(p) != 0)
+	parser p = new_parser(line);
+	Expr *E = parse_expr(&p);
+	skip_spaces(&p);
+	if(peek(&p) != 0)
 	{
 		free_expr(E);
 		return NULL;
@@ -199,7 +166,7 @@ int main()
 					free(candidate);
 					continue;
 				}
-				if(test_conj_many_quiet(candidate, n, T, table))
+				if(test_conj_many(candidate, n, T, table))
 				{
 					//print_conj(candidate);
 					candidate->next = head;
@@ -240,7 +207,7 @@ int main()
 		{
 			read_test_params(&n, &T);
 			printf("Retesting survivors with n=%d and T=%d...\n", n, T);
-			head = test_conjs_quiet(head, n, T, table);
+			head = test_conjs(head, n, T, table);
 			count = count_conjs(head);
 			if(count == 0)
 			{

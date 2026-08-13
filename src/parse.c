@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-parser *new_parser(char *str)
+parser new_parser(char *str)
 {
-    parser *p = malloc(sizeof(parser));
-    p->str = str;
-    p->i = 0;
+    parser p;
+    p.str = str;
+    p.i = 0;
     return p;
 }
 

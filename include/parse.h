@@ -7,7 +7,7 @@ typedef struct {
     int i;
 } parser;
 
-parser *new_parser(char *str);
+parser new_parser(char *str);
 char peek(parser *p);
 char advance(parser *p);
 void skip_spaces(parser *p);

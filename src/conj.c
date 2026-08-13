@@ -392,7 +392,6 @@ int test_conj_many(Conj *C, int cap, int T, vec *table[])
 	while(T--)
 		if(!test_conj(C, cap, table))
 			return 0;
-	print_conj(C);
 	return 1;
 
 }
@@ -402,7 +401,6 @@ int test_conj_many_get_counterexample(Conj *C, int cap, int T, vec *table[], int
 	while(T--)
 		if(!test_conj_get_counterexample(C, cap, table, counterexample))
 			return 0;
-	print_conj(C);
 	return 1;
 
 }
@@ -412,13 +410,13 @@ int test_conj_many_get_counterexample_expr(Conj *C, int cap, int T, vec *table[]
 	while(T--)
 		if(!test_conj_get_counterexample_expr(C, cap, table, counterexample_expr))
 			return 0;
-	print_conj(C);
 	return 1;
 
 }
 
 Conj* test_conjs(Conj *head, int cap, int T, vec *table[])
 {
+	if(head == NULL) return NULL;
 	Conj *prev = new_conj(head->A, head->B);
 	Conj *tmp = prev;
 	prev->next = head;

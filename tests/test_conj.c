@@ -16,10 +16,10 @@ int main()
 		fgets(A, sizeof(A), stdin);
 		printf("Enter the right-hand expression:\n");
 		fgets(B, sizeof(B), stdin);
-		parser *pa = new_parser(A);
-		parser *pb = new_parser(B);
-		Expr *a = parse_expr(pa);
-		Expr *b = parse_expr(pb);
+		parser pa = new_parser(A);
+		parser pb = new_parser(B);
+		Expr *a = parse_expr(&pa);
+		Expr *b = parse_expr(&pb);
 		Conj *c = new_conj(a,b);
 		print_conj(c);
 		while(1)
